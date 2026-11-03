@@ -1,0 +1,33 @@
+FoamFile
+{
+    format      ascii;
+    class       volVectorField;
+    object      U;
+}
+
+UInf 433.9;
+
+dimensions      [0 1 -1 0 0 0 0];
+
+internalField   uniform ($UInf 0 0);
+
+boundaryField
+{
+    inlet
+    {
+        type    fixedValue;
+        value   uniform ($UInf 0 0);
+    }
+
+    outlet
+    {
+        type    zeroGradient;
+    }
+
+    aerofoil
+    {
+        type    noSlip;
+    }
+
+    #includeEtc "caseDicts/setConstraintTypes"
+}

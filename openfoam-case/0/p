@@ -1,0 +1,33 @@
+FoamFile
+{
+    format      ascii;
+    class       volScalarField;
+    object      p;
+}
+
+pInf 1775.544;
+
+dimensions      [1 -1 -2 0 0 0 0];
+
+internalField   uniform $pInf;
+
+boundaryField
+{
+    inlet
+    {
+        type    fixedValue;
+        value   uniform $pInf;
+    }
+
+    outlet
+    {
+        type    zeroGradient;
+    }
+
+    aerofoil
+    {
+        type    zeroGradient;
+    }
+
+    #includeEtc "caseDicts/setConstraintTypes"
+}

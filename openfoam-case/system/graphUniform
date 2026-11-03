@@ -1,0 +1,10 @@
+start           (-0.2 0.25 0.052);
+end             (1.5 0.25 0.052);
+
+nPoints         200;
+
+fields          (p T U Ma);
+
+axis            x;
+
+#includeEtc "caseDicts/functions/graphs/graphUniform.cfg"

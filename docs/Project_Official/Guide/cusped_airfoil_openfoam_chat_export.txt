@@ -1,0 +1,176 @@
+OpenFOAM Cusped Airfoil Project — Chat Export
+Date: 2026-10-28
+
+NOTE
+This export reconstructs the conversation content available in the current context. Some earlier messages were represented as “Skipped N messages”; their exact text was unavailable, so gaps are not invented.
+
+PROJECT CONTEXT
+Paper: “The dynamics of supersonic flow past a new cusped leading edge airfoil” by Saif Akram and Nadeem Hasan (Progress in Computational Fluid Dynamics, 2024).
+
+Assignment:
+1. Learn OpenFOAM working procedure, how to edit files in directories, and work with custom CAD.
+2. Create the paper's airfoil CAD model and run at least a basic OpenFOAM simulation.
+
+Known paper details:
+- Chord c = 1 m.
+- Geometry parameters include xm/c = 0.75, a/c = 0.50, h/c = 0.065; maximum thickness about 0.05c.
+- Planned baseline: Mach 1.25, angle of attack 0°, Reynolds number 5×10^5.
+- Unsteady, viscous, laminar compressible Navier–Stokes flow.
+- Paper uses a circular far field, centred at the leading edge, diameter 80 chord lengths in final simulations.
+- Structured O-mesh, 425×315, about 134,000 nodes; near-wall spacing 1e-4.
+- Adiabatic no-slip wall; ideal gas; gamma = 1.4; Sutherland viscosity; conductivity 0.0242 W/mK; Pr = 0.743.
+- The OpenFOAM case is an adaptation of the paper's Fluent setup, not an exact copy.
+
+CONVERSATION EXCERPTS
+
+USER: “how do i open ofoam fresh now”
+
+[Some messages skipped in the supplied context.]
+
+USER selected prior guidance:
+“Then run:
+blockMesh -help
+If it displays the usage/help output, we're good. Next, we'll set up a basic airfoil case using your converted coordinate data—no more compiling or installation work.”
+
+USER ran `blockMesh -help`.
+Output confirmed OpenFOAM-13, build `13-cde978a97c93`.
+
+USER gave STL path:
+`/home/sankara/Projects/cusped-airfoil/cusped_airfoil.stl`
+
+USER listed:
+`constant/triSurface/cusped_airfoil.stl` — 684K.
+
+USER ran:
+`surfaceCheck constant/triSurface/cusped_airfoil.stl`
+Results:
+- 2388 triangles, 1196 vertices.
+- Bounding box `(0 -0.0489542 0)` to `(1 0.0489542 0.1)`.
+- No illegal triangles.
+- Surface closed; all edges connected to two faces.
+- One connected part and one zone.
+- Six pairs of very close points reported.
+
+USER initially ran `blockMesh` and `checkMesh`; both failed because `system/controlDict` was missing. A later `checkMesh` for an earlier mesh succeeded:
+- 5002 points, 2400 cells.
+- Four patches: inlet, outlet, farfield, frontAndBack.
+- Bounding box `(-5 -5 0)` to `(10 5 0.1)`.
+- Mesh OK.
+
+USER: “are you sure blockmesh is the one for what is asked here? next which solver actually fits the paper case??”
+
+[Some messages skipped.]
+
+USER searched for `diffuserIntake`:
+`/opt/OpenFOAM/OpenFOAM-13/tutorials/shockFluid/diffuserIntake`
+
+USER searched for `snappyHexMeshDict`; results included tutorial cases such as:
+- `fluid/annularThermalMixer`
+- `fluid/iglooWithFridges`
+- `incompressibleFluid/motorBike`
+- `incompressibleFluid/motorBikeSteady`
+- `incompressibleFluid/propeller`
+- `incompressibleFluid/rotorDisk`
+- `incompressibleFluid/turbineSiting`
+- `incompressibleFluid/wingMotion/wingMotion_snappyHexMesh`
+
+USER searched for `extrudeMeshDict`; results included:
+- `fluid/aerofoilNACA0012/system/extrudeMeshDict`
+- `fluid/aerofoilNACA0012Steady/system/extrudeMeshDict`
+- other extrusion tutorials.
+
+USER ran `surfaceCheck constant/triSurface/cusped_airfoil_xz.stl`.
+Results:
+- Bounding box `(0 -0.05 -0.0489542)` to `(1 0.05 0.0489542)`.
+- 2388 triangles, 1196 vertices.
+- No illegal triangles; closed surface; one connected part.
+- No nearby points reported.
+
+USER inspected values in `system/blockMeshDict`:
+- xLead = 0; zLead = 0
+- xTrail = 1; zTrail = 0
+- xUpper = 0.75; zUpper = 0.0489542
+- xLower = 0.75; zLower = -0.0489542
+- geometry file `cusped_airfoil_xz.stl`.
+
+USER inspected tutorial geometry:
+`$FOAM_TUTORIALS/resources/geometry/NACA0012.obj.gz`
+It had 7996 vertices and 15988 faces.
+Available profile file: `../cusped_le_akram_hasan.dat`.
+
+USER ran `surfaceCheck constant/geometry/cusped_airfoil_span1.stl`.
+Results:
+- Bounding box `(0 -0.5 -0.0489542)` to `(1 0.5 0.0489542)`.
+- 2388 triangles, 1196 vertices.
+- No illegal triangles; closed; one connected part; no nearby points.
+
+USER ran `blockMesh`.
+Results:
+- Mesh generated successfully.
+- Bounding box `(-1.25 -0.1 -2)` to `(4 0.1 2)`.
+- 32,480 points, 16,000 cells, 64,240 faces, 31,760 internal faces.
+- Five patches: aerofoil, inlet, outlet, back, front.
+
+USER ran `checkMesh`.
+Results:
+- 32,480 points; 16,000 hexahedral cells.
+- Patches: aerofoil 120 faces, inlet 200, outlet 160, back 16,000, front 16,000.
+- Bounding box `(-1.25 -0.1 -2)` to `(4 0 2)` as shown in output.
+- Two geometric/solution directions `(1 0 1)`.
+- Maximum aspect ratio 81.2643.
+- Maximum non-orthogonality 84.7284°; 60 faces above 70°.
+- Maximum skewness 8.71546; 12 highly skewed faces.
+- `checkMesh` failed one mesh check.
+
+USER asked: “isnt the thin mesh part the issue? i mean skewness is bound to happen isnt it??”
+
+USER listed diagnostic files:
+`./postProcessing/checkMesh/constant/nonOrthoFaces.vtk`
+`./postProcessing/checkMesh/constant/skewFaces.vtk`
+
+USER supplied screenshots of the full geometry and diagnostic face sets in ParaView, then said:
+“bro i cant do this any other route parafoam is irritating”
+
+USER supplied diagnostic summary for `skewFaces.vtk`:
+- 12 problem faces.
+- x range `-0.021733` to `-0.000730`.
+- y = `-0.050000`.
+- z = `0`.
+- Face centres cluster near the leading edge.
+
+USER supplied diagnostic summary for `nonOrthoFaces.vtk`:
+- 60 problem faces.
+- x range `-0.013340` to `0.024669`.
+- y = `-0.050000`.
+- z range `-0.002106` to `0.002106`.
+- Face centres cluster around the leading-edge region.
+
+ASSISTANT: Explained that the poor-quality faces were concentrated around the sharp leading edge, not spread throughout the mesh. Noted the block layout was adapted from the NACA tutorial and may not fit the cusped leading edge well. Asked the user to show `system/blockMeshDict`.
+
+USER ran:
+`sed -n '1,180p' system/blockMeshDict`
+
+The shown dictionary included:
+- `domain`: xMin -4, xMax 4, zMin -2, zMax 2
+- `zCells 80`, `xUCells 30`, `xMCells 30`, `xDCells 40`
+- `zGrading 40`, `xUGrading 5`, `leadGrading 0.2`, `xDGrading 10`
+- Airfoil points: leading edge (0,0), trailing edge (1,0), upper and lower reference points at x=0.75, z=±0.0489542.
+- Geometry `cusped_airfoil_span1.stl`.
+- A cylinder geometry and 24 projected vertices.
+- Six hexahedral blocks and boundary patches including `aerofoil` wall.
+
+MOST RECENT ASSISTANT RESPONSE:
+Suggested backing up and refining the upstream block:
+1. `cp system/blockMeshDict system/blockMeshDict.before-refinement`
+2. Run:
+   `sed -i -e 's/xUCells 30;/xUCells 60;/' -e 's/xUGrading 5;/xUGrading 2;/' system/blockMeshDict`
+3. Verify:
+   `grep -nE 'xUCells|xUGrading|leadGrading' system/blockMeshDict`
+4. Rebuild:
+   `blockMesh`
+   `transformPoints "scale=(1 0 1)"`
+   `extrudeMesh`
+   `checkMesh`
+5. Compare maximum skewness and non-orthogonality with previous values 8.715 and 84.73°.
+
+END OF AVAILABLE CHAT CONTENT

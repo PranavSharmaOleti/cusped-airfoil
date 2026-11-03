@@ -1,0 +1,16 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+  OpenFOAM Foundation v13
+\*---------------------------------------------------------------------------*/
+
+FoamFile
+{
+    format      ascii;
+    class       dictionary;
+    location    "system";
+    object      functions;
+}
+
+#includeFunc forceCoeffsCompressible
+#includeFunc forcesCompressible
+
+// ************************************************************************* //

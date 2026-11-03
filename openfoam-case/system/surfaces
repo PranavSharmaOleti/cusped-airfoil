@@ -1,0 +1,27 @@
+FoamFile
+{
+    format      ascii;
+    class       dictionary;
+    object      surfaces;
+}
+
+type            surfaces;
+libs            ("libsampling.so");
+
+writeControl    writeTime;
+
+surfaceFormat   vtk;
+interpolationScheme cellPoint;
+
+fields          (p T U Ma);
+
+surfaces
+(
+    aerofoilWall
+    {
+        type            patch;
+        patches         (aerofoil);
+        triangulate     no;
+        interpolate     yes;
+    }
+);

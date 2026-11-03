@@ -1,0 +1,13 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+  OpenFOAM Foundation v13
+  Compressible dimensional force integration
+\*---------------------------------------------------------------------------*/
+
+patches         (aerofoil);
+
+CofR            (0.25 -0.05 0);
+pitchAxis       (0 1 0);
+
+log             yes;
+
+#includeEtc "caseDicts/functions/forces/forces.cfg"
