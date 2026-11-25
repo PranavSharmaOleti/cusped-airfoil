@@ -1,16 +1,15 @@
 [project]
 name = "cusped-airfoil"
 version = "0.1.0"
-description = "Add your description here"
+description = "Post-processing helpers for the cusped-airfoil OpenFOAM case"
 readme = "README.md"
-requires-python = ">=3.15"
+requires-python = ">=3.11"
 dependencies = [
-    "matplotlib>=3.11.2",
-    "numpy>=2.5.4",
+    "matplotlib>=3.7",
+    "numpy>=1.24",
+    "pandas>=2.0",
+    "pyvista>=0.43",
 ]
-
-[project.scripts]
-cusped-airfoil = "cusped_airfoil:main"
 
 [build-system]
 requires = ["uv_build>=0.13.6,<0.14.0"]
